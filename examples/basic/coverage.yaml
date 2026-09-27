@@ -1,0 +1,33 @@
+version: 1
+
+entities:
+  - id: incident-001
+  - id: incident-002
+  - id: incident-003
+
+sources:
+  - id: public-registry
+    availability: available
+  - id: road-condition-feed
+    availability: unavailable
+  - id: shelter-directory
+    availability: unknown
+  - id: rainfall-archive
+    availability: not_in_release
+
+coverage:
+  - entity: incident-001
+    source: public-registry
+    status: supported
+  - entity: incident-002
+    source: public-registry
+    status: mapping_gap
+    reason: no_verified_entity_mapping
+  - entity: incident-003
+    source: public-registry
+    status: metadata_gap
+    reason: source_record_has_no_publication_date
+  - entity: incident-001
+    source: shelter-directory
+    status: not_applicable
+    reason: this_example_entity_is_outside_the_directory_scope

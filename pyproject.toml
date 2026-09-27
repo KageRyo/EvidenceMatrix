@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evidencematrix"
+version = "0.1.0"
+description = "A deterministic source-coverage audit tool for multi-source datasets"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [{ name = "KageRyo" }]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Database",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+]
+dependencies = ["PyYAML>=6.0,<7"]
+
+[project.urls]
+Homepage = "https://github.com/KageRyo/EvidenceMatrix"
+Repository = "https://github.com/KageRyo/EvidenceMatrix"
+Issues = "https://github.com/KageRyo/EvidenceMatrix/issues"
+
+[project.scripts]
+evidencematrix = "evidencematrix.cli:entrypoint"
+
+[dependency-groups]
+dev = ["build>=1.2", "pytest>=8.0", "ruff>=0.11"]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

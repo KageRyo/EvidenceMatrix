@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality-and-tests:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: "0.12.19"
+          enable-cache: true
+      - name: Install locked dependencies
+        run: uv sync --locked --all-groups --python ${{ matrix.python-version }}
+      - name: Lint and format
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+      - name: Test
+        run: uv run pytest
+      - name: Build distributions
+        run: uv build
+      - name: Install built wheel
+        run: |
+          python -m venv "$RUNNER_TEMP/package-venv"
+          "$RUNNER_TEMP/package-venv/bin/python" -m pip install dist/evidencematrix-0.1.0-py3-none-any.whl
+          "$RUNNER_TEMP/package-venv/bin/evidencematrix" validate examples/basic
+      - name: CLI smoke test
+        shell: bash
+        run: |
+          uv run evidencematrix validate examples/basic
+          uv run evidencematrix build examples/basic --output "$RUNNER_TEMP/evidencematrix-out"
+          uv run evidencematrix summary examples/basic --format json > "$RUNNER_TEMP/summary.json"
+          python -c 'import json, os, pathlib; data=json.loads(pathlib.Path(os.environ["RUNNER_TEMP"], "summary.json").read_text()); assert data["relationship_count"] == 12'
+          set +e
+          uv run evidencematrix audit examples/basic --format json > "$RUNNER_TEMP/audit.json"
+          audit_status=$?
+          set -e
+          test "$audit_status" -eq 1
