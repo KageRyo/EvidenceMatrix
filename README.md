@@ -1,6 +1,10 @@
 # EvidenceMatrix
 
-[![CI](https://github.com/KageRyo/EvidenceMatrix/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/KageRyo/EvidenceMatrix/actions/workflows/ci.yml) [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
+[![CI](https://github.com/KageRyo/EvidenceMatrix/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/KageRyo/EvidenceMatrix/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/evidencematrix)](https://pypi.org/project/evidencematrix/)
+[![Latest release](https://img.shields.io/github/v/release/KageRyo/EvidenceMatrix?display_name=tag&sort=semver)](https://github.com/KageRyo/EvidenceMatrix/releases)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 EvidenceMatrix builds deterministic coverage matrices for a declared set of entities and expected sources. It shows which relationships are supported, have known gaps, are unavailable, remain unknown, or do not apply.
 
