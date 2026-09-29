@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "entities": [
+    {"id": "entity-1"},
+    {"id": "entity-2"},
+    {"id": "entity-3"},
+    {"id": "entity-4"}
+  ],
+  "sources": [
+    {"id": "catalog-a", "availability": "available"},
+    {"id": "catalog-b", "availability": "available"},
+    {"id": "retired-register", "availability": "unavailable"},
+    {"id": "spring-supplement", "availability": "not_in_release"}
+  ],
+  "coverage": [
+    {
+      "entity": "entity-2",
+      "source": "catalog-a",
+      "status": "mapping_gap",
+      "reason": "shared_name_requires_review"
+    },
+    {
+      "entity": "entity-3",
+      "source": "catalog-a",
+      "status": "not_applicable",
+      "reason": "archive_is_outside_catalog_scope"
+    },
+    {
+      "entity": "entity-4",
+      "source": "catalog-a",
+      "status": "mapping_gap",
+      "reason": "shared_name_requires_review"
+    }
+  ]
+}

@@ -120,6 +120,10 @@ GitHub Actions runs lint and format checks, tests, package builds, and CLI smoke
 
 The public [TWDisaster dataset](https://github.com/KageRyo/TWDisaster) publishes positive event-source links but no expected-source eligibility matrix. The [dogfood assessment](examples/twdisaster/README.md) explains why converting absent links into gaps would invent facts and why the current release cannot provide a useful matrix of expected coverage.
 
+## EntityLinkage integration
+
+The [synthetic integration example](examples/entitylinkage-coverage/README.md) demonstrates the standalone flow from external records through [EntityLinkage](https://github.com/KageRyo/EntityLinkage) review to an EvidenceMatrix coverage matrix. It preserves ambiguous and unresolved records for review and uses only explicit context plus resolved links to declare coverage. CI runs the example with the built EvidenceMatrix wheel and the pinned EntityLinkage release.
+
 ## License
 
 EvidenceMatrix is distributed under the [Apache License 2.0](LICENSE).
