@@ -7,7 +7,7 @@ This fully synthetic example links fictional external catalog records to a small
 Install the two standalone tools:
 
 ```bash
-python -m pip install 'entitylinkage==0.1.0' 'evidencematrix==0.1.1'
+python -m pip install -r examples/entitylinkage-coverage/requirements.txt 'evidencematrix==0.1.1'
 bash examples/entitylinkage-coverage/run-example.sh
 ```
 

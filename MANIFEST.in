@@ -1,2 +1,2 @@
 include LICENSE README.md
-recursive-include examples *.yaml *.md *.json *.csv *.py *.sh
+recursive-include examples *.yaml *.md *.json *.csv *.py *.sh *.txt

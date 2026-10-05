@@ -38,9 +38,15 @@ jobs:
       - name: Install built wheel
         run: |
           python -m venv "$RUNNER_TEMP/package-venv"
-          "$RUNNER_TEMP/package-venv/bin/python" -m pip install dist/evidencematrix-0.1.1-py3-none-any.whl entitylinkage==0.1.0
-          "$RUNNER_TEMP/package-venv/bin/evidencematrix" validate examples/basic
-          PATH="$RUNNER_TEMP/package-venv/bin:$PATH" bash examples/entitylinkage-coverage/run-example.sh "$RUNNER_TEMP/entitylinkage-coverage-example"
+          shopt -s nullglob
+          wheels=(dist/*.whl)
+          test "${#wheels[@]}" -eq 1
+          "$RUNNER_TEMP/package-venv/bin/python" -m pip install "${wheels[0]}" -r examples/entitylinkage-coverage/requirements.txt
+          export PATH="$RUNNER_TEMP/package-venv/bin:$PATH"
+          cd "$RUNNER_TEMP"
+          python -c 'import evidencematrix, pathlib; assert "site-packages" in pathlib.Path(evidencematrix.__file__).resolve().parts'
+          evidencematrix validate "$GITHUB_WORKSPACE/examples/basic"
+          bash "$GITHUB_WORKSPACE/examples/entitylinkage-coverage/run-example.sh" "$RUNNER_TEMP/entitylinkage-coverage-example"
       - name: CLI smoke test
         shell: bash
         run: |

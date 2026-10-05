@@ -127,3 +127,7 @@ The [synthetic integration example](examples/entitylinkage-coverage/README.md) d
 ## License
 
 EvidenceMatrix is distributed under the [Apache License 2.0](LICENSE).
+
+## Maintenance
+
+See [maintenance conventions](docs/maintenance.md) for dependency updates, required CI, Action pinning and release validation.

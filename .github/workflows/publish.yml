@@ -26,6 +26,12 @@ jobs:
         run: |
           package_version="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
           test "$GITHUB_REF_NAME" = "v$package_version"
+      - name: Test locked release source
+        run: |
+          uv sync --locked --all-groups
+          uv run --locked ruff check .
+          uv run --locked ruff format --check .
+          uv run --locked pytest
       - name: Build distributions
         run: uv build
       - name: Check distribution metadata
@@ -55,4 +61,4 @@ jobs:
           name: release-dists
           path: dist/
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
