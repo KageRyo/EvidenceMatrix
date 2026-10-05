@@ -30,6 +30,7 @@ jobs:
         env:
           PYTHONPATH: src
         run: |
+          set -euo pipefail
           uv sync --locked --all-groups --no-install-project --no-build
           uv run --locked --no-sync --no-build ruff check .
           uv run --locked --no-sync --no-build ruff format --check .
