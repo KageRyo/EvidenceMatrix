@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import json
+import os
+
+import pytest
 
 from evidencematrix import build_matrix, load_manifest, summarize_matrix
-from evidencematrix.output import build_artifacts
+from evidencematrix.output import ARTIFACT_NAMES, build_artifacts, write_artifacts
 
 
 def test_build_artifacts_are_byte_deterministic(tmp_path):
@@ -82,3 +85,22 @@ coverage:
     assert gap_report["status_counts"]["unknown"] == 1
     assert "not_applicable" not in gap_report["status_counts"]
     assert gap_report["not_applicable_count"] == 1
+
+
+@pytest.mark.parametrize("link_kind", ["symlink", "hardlink"])
+def test_artifact_writes_do_not_follow_preexisting_temporary_links(tmp_path, link_kind):
+    outside = tmp_path / "outside.txt"
+    outside.write_bytes(b"keep outside data")
+    output = tmp_path / "reports"
+    output.mkdir()
+    planted = output / ".coverage_matrix.csv.tmp"
+    if link_kind == "symlink":
+        planted.symlink_to(outside)
+    else:
+        os.link(outside, planted)
+    artifacts = {name: b"new report\n" for name in ARTIFACT_NAMES}
+
+    write_artifacts(artifacts, output)
+
+    assert outside.read_bytes() == b"keep outside data"
+    assert (output / "coverage_matrix.csv").read_bytes() == b"new report\n"
