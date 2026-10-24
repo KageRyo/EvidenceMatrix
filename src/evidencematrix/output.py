@@ -6,6 +6,7 @@ import csv
 import io
 import json
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 from evidencematrix.audit import audit_matrix
 from evidencematrix.model import (
@@ -145,8 +146,15 @@ def write_artifacts(artifacts: dict[str, bytes], output_dir: str | Path) -> tupl
     written: list[Path] = []
     for name in ARTIFACT_NAMES:
         destination = root / name
-        temporary = root / f".{name}.tmp"
-        temporary.write_bytes(artifacts[name])
-        temporary.replace(destination)
+        temporary = None
+        try:
+            # Do not open a predictable path supplied by an existing report directory.
+            with NamedTemporaryFile(dir=root, prefix=f".{name}.", delete=False) as stream:
+                temporary = Path(stream.name)
+                stream.write(artifacts[name])
+            temporary.replace(destination)
+        finally:
+            if temporary is not None:
+                temporary.unlink(missing_ok=True)
         written.append(destination)
     return tuple(written)
