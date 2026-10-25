@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import stat
 
 import pytest
 
@@ -104,3 +105,29 @@ def test_artifact_writes_do_not_follow_preexisting_temporary_links(tmp_path, lin
 
     assert outside.read_bytes() == b"keep outside data"
     assert (output / "coverage_matrix.csv").read_bytes() == b"new report\n"
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX permission bits")
+def test_new_artifacts_use_ordinary_file_permissions(tmp_path):
+    reference = tmp_path / "ordinary"
+    reference.write_bytes(b"reference")
+    output = tmp_path / "reports"
+    write_artifacts({name: b"new report\n" for name in ARTIFACT_NAMES}, output)
+
+    expected = stat.S_IMODE(reference.stat().st_mode)
+    for name in ARTIFACT_NAMES:
+        assert stat.S_IMODE((output / name).stat().st_mode) == expected
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX permission bits")
+@pytest.mark.parametrize("mode", [0o640, 0o2640])
+def test_replacing_regular_artifact_preserves_rwx_without_special_bits(tmp_path, mode):
+    output = tmp_path / "reports"
+    output.mkdir()
+    report = output / "coverage_matrix.csv"
+    report.write_bytes(b"old report")
+    report.chmod(mode)
+
+    write_artifacts({name: b"new report\n" for name in ARTIFACT_NAMES}, output)
+
+    assert stat.S_IMODE(report.stat().st_mode) == 0o640

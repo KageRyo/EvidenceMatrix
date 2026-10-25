@@ -5,8 +5,9 @@ from __future__ import annotations
 import csv
 import io
 import json
+import stat
 from pathlib import Path
-from tempfile import NamedTemporaryFile
+from tempfile import TemporaryDirectory
 
 from evidencematrix.audit import audit_matrix
 from evidencematrix.model import (
@@ -146,15 +147,18 @@ def write_artifacts(artifacts: dict[str, bytes], output_dir: str | Path) -> tupl
     written: list[Path] = []
     for name in ARTIFACT_NAMES:
         destination = root / name
-        temporary = None
-        try:
-            # Do not open a predictable path supplied by an existing report directory.
-            with NamedTemporaryFile(dir=root, prefix=f".{name}.", delete=False) as stream:
-                temporary = Path(stream.name)
+        # A private directory protects exclusive creation while honoring the process umask.
+        with TemporaryDirectory(dir=root, prefix=f".{name}.") as workspace:
+            temporary = Path(workspace) / name
+            with temporary.open("xb") as stream:
                 stream.write(artifacts[name])
+            try:
+                previous_mode = destination.lstat().st_mode
+            except FileNotFoundError:
+                pass
+            else:
+                if stat.S_ISREG(previous_mode):
+                    temporary.chmod(previous_mode & 0o777)
             temporary.replace(destination)
-        finally:
-            if temporary is not None:
-                temporary.unlink(missing_ok=True)
         written.append(destination)
     return tuple(written)
