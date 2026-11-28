@@ -8,7 +8,7 @@
 
 EvidenceMatrix builds deterministic coverage matrices for a declared set of entities and expected sources. It shows which relationships are supported, have known gaps, are unavailable, remain unknown, or do not apply.
 
-EvidenceMatrix was extracted from source-coverage auditing patterns developed in a real-world multi-source data pipeline. It is a standalone tool and does not require that project or its data.
+EvidenceMatrix grew out of source-coverage checks in a multi-source data pipeline.
 
 ## What it does
 
@@ -18,9 +18,9 @@ EvidenceMatrix was extracted from source-coverage auditing patterns developed in
 - Writes stable CSV, JSON, and Markdown reports without adding timestamps.
 - Runs locally and offline after installation.
 
-## What it does not do
+## Related tools
 
-EvidenceMatrix does not download or transform data, validate arbitrary dataset schemas, verify file integrity, build lineage graphs, align spatial data, manage workflows, or evaluate machine-learning models. Use [LineageGuard](https://github.com/KageRyo/LineageGuard) for artifact origin and lineage, [ReleaseGuard](https://github.com/KageRyo/ReleaseGuard) for dataset release structure and integrity, and [GridForge](https://github.com/KageRyo/GridForge) for spatial alignment.
+Use [LineageGuard](https://github.com/KageRyo/LineageGuard) for artifact origin and lineage, [ReleaseGuard](https://github.com/KageRyo/ReleaseGuard) for dataset release structure and integrity, and [GridForge](https://github.com/KageRyo/GridForge) for spatial alignment.
 
 ## Installation
 
